@@ -1,0 +1,52 @@
+name: Build Mainline Kernel
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    name: "Build"
+
+    steps:
+      - name: 配置 Git
+        run: |
+          git config --global user.name "Bruce Zhang"
+          git config --global user.email "zttt183525594@gmail.com"
+
+      - name: 安装依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade
+          sudo apt-get install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
+          sudo apt-get install binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs wget gzip
+
+      - name: 设置 ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 2G
+
+      - name: 拉取仓库
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: repo
+
+      - name: 拉取内核源码
+        run: |
+          mkdir -p kernel_workspace
+          git clone https://gitlab.com/sdm845-mainline/linux.git -b v6.16-rc2 kernel_workspace/kernel_platform
+          git clone https://gitlab.com/sdm845-mainline/pmtools kernel_workspace/tools
+          source "kernel_workspace/tools/pmenv"
+
+      - name: 下载 clang 编译器
+        run: |
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+          tar xf clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+
+      - name: 构建内核
+        run: |
+          export PATH=$(pwd)/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/:$PATH
+          cd kernel_workspace/kernel_platform
+          mm defconfig sdm845.config
+          mm
