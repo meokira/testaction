@@ -8,9 +8,9 @@ jobs:
 
     strategy:
       matrix:
-        SUSFS: ["true", "false"]
-        KPM: ["true", "false"]
-        ZRAM: ["true", "false"]
+        SUSFS: ["false", "false"]
+        KPM: ["false", "false"]
+        ZRAM: ["false", "false"]
       fail-fast: false
 
     name: "Build (SuSFS: ${{ matrix.SUSFS }}, KPM: ${{ matrix.KPM }}, ZRAM: ${{ matrix.ZRAM }})"
