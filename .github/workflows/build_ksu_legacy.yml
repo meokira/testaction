@@ -6,7 +6,7 @@ on:
       version:
         description: 'LineageOS Version'
         required: true
-        default: '18.1'
+        default: '18.7'
 
 jobs:
   build:
@@ -49,9 +49,9 @@ jobs:
       - name: Checkout kernel code
         uses: actions/checkout@v4
         with:
-          repository: meokira/testbuild
-          ref: lineage-${{ github.event.inputs.version }}
-          path: testbuild
+          repository: hkwucbytcsre/TB-X605FC_msm4.9
+          ref: android_${{ github.event.inputs.version }}
+          path: TB-X605FC_msm4.9
       - name: Checkout AnyKernel3 code
         uses: actions/checkout@v4
         with:
@@ -75,31 +75,31 @@ jobs:
           sudo apt-get install binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs
       - name: Check KernelSU code
         run: |
-          cd testbuild
+          cd TB-X605FC_msm4.9
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
       - name: Get version and commit
         run: |
-          cd testbuild/KernelSU
+          cd TB-X605FC_msm4.9/KernelSU
           VERSION=$(($(git rev-list --count HEAD) + 10200))
           echo "KSU_VERSION=$VERSION" >> $GITHUB_ENV
           echo $VERSION
       - name: Enable KPROBES
         run: |
-          cd testbuild
+          cd TB-X605FC_msm4.9
           CONFIG_FILE=./arch/arm64/configs/lineageos_kuntao_defconfig
           echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
           echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
           echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
       - name: Download clang
         run: |
-          wget https://github.com/Snownamida/Polaris_Kernel/raw/refs/heads/master/Cross_Compile/aarch64-linux-android-4.9-d7d824eaa0690179c4b504209dbb017dfc730cf3.tar.gz
-          tar xf aarch64-linux-android-4.9-d7d824eaa0690179c4b504209dbb017dfc730cf3.tar.gz
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+          tar xf clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
       - name: Build Kernel With KernelSU
         run: |
-          export PATH=$(pwd)/aarch64-linux-android-4.9-d7d824eaa0690179c4b504209dbb017dfc730cf3/bin/:$PATH
-          cd testbuild
+          export PATH=$(pwd)/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/:$PATH
+          cd TB-X605FC_msm4.9
           make O=out $KERNEL_DEFCONFIG
-          make -j$(nproc --all) O=out ARCH=arm64 SUBARCH=arm64 CC="ccache gcc" CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+          make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- LLVM=1
           cp out/arch/arm64/boot/Image.gz-dtb ../AnyKernel3
         env:
           KERNEL_DEFCONFIG: "lineageos_kuntao_defconfig"
