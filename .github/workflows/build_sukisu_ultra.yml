@@ -11,7 +11,7 @@ jobs:
         SUSFS: ["false", "false"]
         KPM: ["false", "false"]
         ZRAM: ["false", "false"]
-      fail-fast: false
+      fail-fast: true
 
     name: "Build (SuSFS: ${{ matrix.SUSFS }}, KPM: ${{ matrix.KPM }}, ZRAM: ${{ matrix.ZRAM }})"
 
