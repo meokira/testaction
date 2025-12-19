@@ -10,13 +10,24 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
       CCACHE_HARDLINK: "true"
 
     steps:
+      - name: Remove unused packages
+        if: env.REMOVE_UNUSED_PACKAGES == 'true'
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: false
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -39,9 +50,9 @@ jobs:
       - name: Checkout kernel code
         uses: actions/checkout@v4
         with:
-          repository: LineageOS/android_kernel_oneplus_sdm845
+          repository: meokira/testbuild
           ref: lineage-${{ github.event.inputs.version }}
-          path: android_kernel_oneplus_sdm845
+          path: lineageos_kuntao_defconfig
       - name: Checkout AnyKernel3 code
         uses: actions/checkout@v4
         with:
@@ -65,18 +76,18 @@ jobs:
           sudo apt-get install binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs
       - name: Check KernelSU code
         run: |
-          cd android_kernel_oneplus_sdm845
+          cd testbuild
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
       - name: Get version and commit
         run: |
-          cd android_kernel_oneplus_sdm845/KernelSU
+          cd testbuild/KernelSU
           VERSION=$(($(git rev-list --count HEAD) + 10200))
           echo "KSU_VERSION=$VERSION" >> $GITHUB_ENV
           echo $VERSION
       - name: Enable KPROBES
         run: |
-          cd android_kernel_oneplus_sdm845
-          CONFIG_FILE=./arch/arm64/configs/enchilada_defconfig
+          cd testbuild
+          CONFIG_FILE=./arch/arm64/configs/lineageos_kuntao_defconfig
           echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
           echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
           echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
@@ -87,7 +98,7 @@ jobs:
       - name: Build Kernel With KernelSU
         run: |
           export PATH=$(pwd)/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/:$PATH
-          cd android_kernel_oneplus_sdm845
+          cd testbuild
           make O=out $KERNEL_DEFCONFIG
           make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- LLVM=1
           cp out/arch/arm64/boot/Image.gz-dtb ../AnyKernel3
