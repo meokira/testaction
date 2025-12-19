@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: 配置 Git
         run: |
-          git config --global user.name "Bruce Zhang"
-          git config --global user.email "zttt183525594@gmail.com"
+          git config --global user.name "meokira"
+          git config --global user.email "meo-arkia@email.ncu.edu.cn"
 
       - name: 安装依赖
         run: |
@@ -42,8 +42,8 @@ jobs:
       - name: 拉取内核源码
         uses: actions/checkout@v4
         with:
-          repository: LineageOS/android_kernel_oneplus_sdm845
-          ref: lineage-22.2
+          repository: pranayadmn/android_kernel_lenovo_msm8937-4.9
+          ref: lineage-17.1
           path: kernel_workspace/kernel_platform
 
       - name: 删除内核 -dirty 后缀
