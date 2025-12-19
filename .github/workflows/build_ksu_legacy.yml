@@ -39,8 +39,8 @@ jobs:
           remove-codeql: 'true'
       - name: Configure Git
         run: |
-          git config --global user.name "BruceZhang1993"
-          git config --global user.email "zttt183525594@gmail.com"
+          git config --global user.name "meokira"
+          git config --global user.email "meo-arkia@email.ncu.edu.cn"
       - name: Checkout this repository
         uses: actions/checkout@v4
         with:
