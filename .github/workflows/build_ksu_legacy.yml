@@ -18,7 +18,6 @@ jobs:
 
     steps:
       - name: Remove unused packages
-        if: env.REMOVE_UNUSED_PACKAGES == 'true'
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
@@ -52,7 +51,7 @@ jobs:
         with:
           repository: meokira/testbuild
           ref: lineage-${{ github.event.inputs.version }}
-          path: lineageos_kuntao_defconfig
+          path: testbuild
       - name: Checkout AnyKernel3 code
         uses: actions/checkout@v4
         with:
