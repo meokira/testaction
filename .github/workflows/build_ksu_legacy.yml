@@ -86,7 +86,7 @@ jobs:
       - name: Enable KPROBES
         run: |
           cd TB-X605FC_msm4.9
-          CONFIG_FILE=./arch/arm64/configs/lineageos_kuntao_defconfig
+          CONFIG_FILE=./arch/arm64/configs/hq_sdm450_defconfig
           echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
           echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
           echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
@@ -102,7 +102,7 @@ jobs:
           make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- LLVM=1
           cp out/arch/arm64/boot/Image.gz-dtb ../AnyKernel3
         env:
-          KERNEL_DEFCONFIG: "lineageos_kuntao_defconfig"
+          KERNEL_DEFCONFIG: "hq_sdm450_defconfig"
           ARCH: arm64
           SUBARCH: arm64
       - name: Upload AnyKernel3
