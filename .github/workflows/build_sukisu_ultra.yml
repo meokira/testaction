@@ -8,10 +8,10 @@ jobs:
 
     strategy:
       matrix:
-        SUSFS: ["false", "false"]
-        KPM: ["false", "false"]
-        ZRAM: ["false", "false"]
-      fail-fast: true
+        SUSFS: ["true", "false"]
+        KPM: ["true", "false"]
+        ZRAM: ["true", "false"]
+      fail-fast: false
 
     name: "Build (SuSFS: ${{ matrix.SUSFS }}, KPM: ${{ matrix.KPM }}, ZRAM: ${{ matrix.ZRAM }})"
 
@@ -42,8 +42,8 @@ jobs:
       - name: 拉取内核源码
         uses: actions/checkout@v4
         with:
-          repository: pranayadmn/android_kernel_lenovo_msm8937-4.9
-          ref: lineage-17.1
+          repository: hkwucbytcsre/TB-X605FC_msm4.9
+          ref: android_10
           path: kernel_workspace/kernel_platform
 
       - name: 删除内核 -dirty 后缀
