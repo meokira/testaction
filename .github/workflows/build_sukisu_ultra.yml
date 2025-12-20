@@ -124,7 +124,7 @@ jobs:
       - name: 增加内核配置
         run: |
           cd kernel_workspace/kernel_platform
-          CONFIG_FILE=./arch/arm64/configs/enchilada_defconfig
+          CONFIG_FILE=./arch/arm64/configs/hq_sdm450_defconfig
           KERNEL_VERSION=4.9
 
           # SukiSU Ultra config
@@ -175,9 +175,9 @@ jobs:
           export PATH=$(pwd)/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/:$PATH
           cd kernel_workspace/kernel_platform
           make O=out $KERNEL_DEFCONFIG
-          make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- LLVM=1
+          make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CONFIG_BUILD_ARM64_DT_OVERLAY=y DTC_EXT=dtc CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- LLVM=1
         env:
-          KERNEL_DEFCONFIG: "enchilada_defconfig"
+          KERNEL_DEFCONFIG: "hq_sdm450_defconfig"
           ARCH: arm64
           SUBARCH: arm64
 
@@ -235,7 +235,7 @@ jobs:
           else
             ZRAM_TAG=""
           fi
-          PACKAGE_NAME="Lineage_OnePlus6_SukiSU_${KSU_VERSION}${SUSFS_TAG}${KPM_TAG}${ZRAM_TAG}_${DATE}"
+          PACKAGE_NAME="Lineage_Lenovo_SukiSU_${KSU_VERSION}${SUSFS_TAG}${KPM_TAG}${ZRAM_TAG}_${DATE}"
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
         env:
           KSU_VERSION: ${{ env.KSU_VERSION }}
