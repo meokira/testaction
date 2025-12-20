@@ -92,7 +92,7 @@ jobs:
           echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
       - name: Download clang
         run: |
-          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.1/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
+          wget https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
           tar xf clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
       - name: Build Kernel With KernelSU
         run: |
