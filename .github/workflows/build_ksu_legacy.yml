@@ -99,7 +99,7 @@ jobs:
           export PATH=$(pwd)/clang+llvm-12.0.1-x86_64-linux-gnu-ubuntu-16.04.tar.xz/bin/:$PATH
           cd TB-X605FC_msm4.9
           make O=out $KERNEL_DEFCONFIG
-          make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+          make -j$(nproc --all) O=out ARCH=arm64 CC="ccache clang" CONFIG_BUILD_ARM64_DT_OVERLAY=y DTC_EXT=dtc CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
           cp out/arch/arm64/boot/Image.gz-dtb ../AnyKernel3
         env:
           KERNEL_DEFCONFIG: "hq_sdm450_defconfig"
